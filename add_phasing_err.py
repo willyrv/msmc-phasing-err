@@ -76,12 +76,15 @@ def add_phasing_err(chrA, chrB, snp_pos, errors_positions):
         # if phasing error
             newA.append(A[start_pos:curr_pos])
             newB.append(B[start_pos:curr_pos])
-            # Invert the chromosomes
-            (A, B) = (B, A)
             start_pos = curr_pos
-            err_index += 1
-            if err_index == len(errors_positions):
-                break
+            # Invert the chromosomes as many times as there are phasing errors
+            while (snp_pos[curr_pos] >= errors_positions[err_index]):
+                (A, B) = (B, A)
+                err_index += 1
+                if err_index == len(errors_positions):
+                    curr_pos = len(snp_pos) # make sure that it will not enter
+                                            # the first while next time
+                    break # quit current while
         curr_pos +=1
     # Copy the rest of the haplotypes to the new chromosomes
     newA.append(A[start_pos:])
